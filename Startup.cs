@@ -15,7 +15,10 @@ using InventoryBeginners.Data;
 using InventoryBeginners.Interfaces;
 using InventoryBeginners.Repositories;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace InventoryBeginners
 {
@@ -33,19 +36,20 @@ namespace InventoryBeginners
         {
             services.AddControllersWithViews();
 
-            services.AddScoped<IUnit, UnitRepository>();
-            
-            services.AddScoped<IProduct, ProductRepo>();
+            services.AddTransient<IUnit, UnitRepository>();
 
-            services.AddScoped<ISupplier, SupplierRepo>();
+            services.AddTransient<IProduct, ProductRepo>();
 
-            services.AddScoped<ICategory, CategoryRepo>();
-            services.AddScoped<IBrand, BrandRepo>();
-            services.AddScoped<IProductProfile, ProductProfileRepo>();
-            services.AddScoped<IProductGroup, ProductGroupRepo>();
+            services.AddTransient<ISupplier, SupplierRepo>();
+
+            services.AddTransient<ICategory, CategoryRepo>();
+            services.AddTransient<IBrand, BrandRepo>();
+            services.AddTransient<IProductProfile, ProductProfileRepo>();
+            services.AddTransient<IProductGroup, ProductGroupRepo>();
             //services.AddScoped<IProductAttribute, ProductAttributeRepo>();
-            services.AddDbContext<InventoryContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Default")));
-           // services.AddDbContext<InventoryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("dbconn")));
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+           
+            services.AddDbContext<InventoryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<InventoryContext>();
@@ -57,19 +61,25 @@ namespace InventoryBeginners
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+               app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseExceptionHandler("/Error");
+                //The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+            }
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var service = scope.ServiceProvider;
+                var context = service.GetRequiredService<InventoryContext>();
+                //context.Database.EnsureCreated();
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            
             app.UseAuthentication();
             app.UseAuthorization();
 
