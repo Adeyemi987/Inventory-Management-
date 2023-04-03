@@ -48,7 +48,7 @@ namespace InventoryBeginners
             services.AddTransient<IProductGroup, ProductGroupRepo>();
             //services.AddScoped<IProductAttribute, ProductAttributeRepo>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-           
+            //ConnectionHelper.GetConnectionString(Configuration);
             services.AddDbContext<InventoryContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
