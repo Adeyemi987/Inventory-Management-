@@ -15,7 +15,7 @@ namespace InventoryBeginners.Data
     
         public InventoryContext(DbContextOptions options) : base(options)
         {
-            
+          
         }
 
         public virtual DbSet<Unit> Units { get; set; }  
@@ -25,9 +25,8 @@ namespace InventoryBeginners.Data
         public virtual DbSet<ProductProfile> ProductProfiles { get; set; }
 
         public virtual DbSet<Product> Products { get; set; }
-
         public virtual DbSet<Supplier> Suppliers { get; set; }
 
-
+        
     }
 }
