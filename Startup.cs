@@ -49,7 +49,7 @@ namespace InventoryBeginners
             //services.AddScoped<IProductAttribute, ProductAttributeRepo>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
            
-            services.AddDbContext<InventoryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<InventoryContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<InventoryContext>();
